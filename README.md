@@ -56,3 +56,12 @@ Visitors to the interactive preview portal can execute:
 ├── README.md            # System overview and operational capabilities
 ├── SECURITY.md          # Data privacy, zero-PAN, and security architecture
 └── ARCHITECTURE.md      # TSQ state machine & ISO 20022 messaging specs
+
+📞 Commercial & Demonstration Inquiries
+Forge Systems Technologies Ltd
+
+Direct Lead: Oscar Kwifo — Infrastructure Lead & Director
+
+Contact Channel: Executive Scheduling Link available in live portal
+
+Live Demo URL: https://the-forge-west-africa.github.io/kq-telemetry-portal/
