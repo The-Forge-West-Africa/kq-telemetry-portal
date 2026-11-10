@@ -1,0 +1,254 @@
+openapi: 3.1.0
+info:
+  title: The Forge — Kenya Airways (KQ) Clearing & Telemetry API
+  description: >
+    Enterprise integration specification for Kenya Airways (KQ) passenger ticketing,
+    autonomous Transaction Status Query (TSQ) interrogation, sub-180s reversal execution,
+    and out-of-band SHA-256 evidence dispatch.
+  version: 1.0.0
+  contact:
+    name: Oscar Kwifo — Infrastructure Lead
+    email: infrastructure@theforge.africa
+    url: https://the-forge-west-africa.github.io/kq-telemetry-portal/
+
+servers:
+  - url: https://node-nbo-01.telemetry.theforge.africa/v1
+    description: Nairobi Production Node (NODE-NBO-01) — mTLS 1.3
+  - url: https://sandbox.telemetry.theforge.africa/v1
+    description: KQ Dedicated Staging Sandbox
+
+security:
+  - MutualTLS: []
+  - BearerToken: []
+
+paths:
+  /telemetry/tsq/interrogate:
+    post:
+      summary: Autonomous Transaction Status Query (TSQ)
+      description: >
+        Invoked immediately upon an upstream checkout timeout (e.g. HTTP 504 / 408)
+        to autonomously interrogate the acquiring switch (Daraja, Local Card, Interswitch)
+        and determine terminal transaction state before manual dispute logging.
+      operationId: interrogateTransactionStatus
+      tags:
+        - Telemetry & TSQ
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TSQInterrogateRequest'
+      responses:
+        '200':
+          description: Terminal state resolved from switch within sub-15s window.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TSQInterrogateResponse'
+        '408':
+          description: Switch timeout; queued for autonomous 180s reversal cascade.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /reversals/execute:
+    post:
+      summary: Autonomous Timeout Reversal Execution
+      description: >
+        Executes immediate sub-180s automated reversal to the passenger wallet/card
+        and notifies the KQ Passenger Service System (PSS) to release seat holds.
+      operationId: executeAutonomousReversal
+      tags:
+        - Autonomous Dispute Resolution
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ReversalExecuteRequest'
+      responses:
+        '200':
+          description: Reversal completed, ledger balanced, seat released.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReversalExecuteResponse'
+
+  /webhooks/evidence-packet:
+    post:
+      summary: Inbound Cryptographic Audit Evidence Webhook
+      description: >
+        Dispatched by The Forge to Kenya Airways revenue assurance and audit systems,
+        delivering immutable SHA-256 evidence packets for dispute defense and IATA BSP clearing.
+      operationId: receiveEvidencePacket
+      tags:
+        - Audit & Webhooks
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EvidencePacketPayload'
+      responses:
+        '200':
+          description: Webhook received, verified, and acknowledged.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  acknowledged:
+                    type: boolean
+                    example: true
+                  receipt_timestamp:
+                    type: string
+                    format: date-time
+                    example: "2026-11-10T13:30:00Z"
+
+components:
+  securitySchemes:
+    MutualTLS:
+      type: mutualTLS
+      description: Institutional mTLS with client certificate pinning.
+    BearerToken:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+  schemas:
+    TSQInterrogateRequest:
+      type: object
+      required:
+        - trace_id
+        - pnr_reference
+        - switch_id
+        - amount
+        - currency
+      properties:
+        trace_id:
+          type: string
+          format: uuid
+          example: "e8b23c52-7a19-4821-9d2a-9f5b28a1c900"
+        pnr_reference:
+          type: string
+          example: "KQ-7G8P4K"
+        flight_number:
+          type: string
+          example: "KQ 504"
+        route:
+          type: string
+          example: "NBO-LHR"
+        switch_id:
+          type: string
+          enum: [MPESA_DARAJA, DIRECT_CARD_USD, IATA_BSP, INTERSWITCH_NG]
+          example: "MPESA_DARAJA"
+        amount:
+          type: number
+          format: double
+          example: 84500.00
+        currency:
+          type: string
+          enum: [KES, USD, GBP, EUR]
+          example: "KES"
+
+    TSQInterrogateResponse:
+      type: object
+      properties:
+        trace_id:
+          type: string
+          example: "e8b23c52-7a19-4821-9d2a-9f5b28a1c900"
+        pnr_reference:
+          type: string
+          example: "KQ-7G8P4K"
+        terminal_status:
+          type: string
+          enum: [SUCCESS_CONFIRMED, TIMEOUT_CONFIRMED, DROPPED_SESSION_ABORTED]
+          example: "TIMEOUT_CONFIRMED"
+        switch_stan:
+          type: string
+          example: "STAN-481920-NBO"
+        latency_ms:
+          type: integer
+          example: 18
+        action_recommended:
+          type: string
+          enum: [POST_TO_LEDGER, TRIGGER_REVERSAL, MANUAL_REVIEW]
+          example: "TRIGGER_REVERSAL"
+
+    ReversalExecuteRequest:
+      type: object
+      required:
+        - trace_id
+        - pnr_reference
+        - reversal_reason
+      properties:
+        trace_id:
+          type: string
+          example: "e8b23c52-7a19-4821-9d2a-9f5b28a1c900"
+        pnr_reference:
+          type: string
+          example: "KQ-7G8P4K"
+        reversal_reason:
+          type: string
+          example: "GATEWAY_TIMEOUT_HTTP_504_AUTONOMOUS_SWEEP"
+
+    ReversalExecuteResponse:
+      type: object
+      properties:
+        reversal_id:
+          type: string
+          example: "REV-20261110-KQ-0941"
+        status:
+          type: string
+          example: "EXECUTED"
+        seat_inventory_state:
+          type: string
+          example: "RELEASED"
+        settlement_status:
+          type: string
+          example: "ZERO_SUM_BALANCED"
+        ledger_debit:
+          type: string
+          example: "KQ_REVENUE_SUSPENSE"
+        ledger_credit:
+          type: string
+          example: "PASSENGER_WALLET_REFUND"
+
+    EvidencePacketPayload:
+      type: object
+      required:
+        - evidence_id
+        - pnr_reference
+        - sha256_digest
+        - iso20022_message_ref
+      properties:
+        evidence_id:
+          type: string
+          example: "EVD-20261110-84912"
+        pnr_reference:
+          type: string
+          example: "KQ-7G8P4K"
+        timestamp_utc:
+          type: string
+          format: date-time
+          example: "2026-11-10T10:09:19Z"
+        iso20022_message_ref:
+          type: string
+          example: "pacs.002.001.12-NBO-01"
+        sha256_digest:
+          type: string
+          example: "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        payload_signature_verified:
+          type: boolean
+          example: true
+
+    ErrorResponse:
+      type: object
+      properties:
+        error_code:
+          type: string
+          example: "SWITCH_TIMEOUT"
+        message:
+          type: string
+          example: "Switch failed to respond within SLA threshold. Autonomous recovery initiated."
