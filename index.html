@@ -1,0 +1,737 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>The Forge | Sovereign Telemetry & Settlement Portal - Kenya Airways</title>
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Google Fonts: Inter & JetBrains Mono -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+  
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+            mono: ['JetBrains Mono', 'monospace'],
+          },
+          colors: {
+            brand: {
+              dark: '#080c14',
+              surface: '#0f172a',
+              card: '#131e36',
+              border: '#1e293b',
+              accent: '#06b6d4',      // Cyan
+              emerald: '#10b981',     // Neon emerald
+              amber: '#f59e0b',
+              rose: '#f43f5e',
+              indigo: '#6366f1'
+            }
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    body {
+      background-color: #060911;
+      color: #e2e8f0;
+      font-family: 'Inter', sans-serif;
+    }
+    
+    .glass-card {
+      background: linear-gradient(135deg, rgba(19, 30, 54, 0.75) 0%, rgba(15, 23, 42, 0.85) 100%);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.5);
+    }
+    
+    .glow-cyan {
+      box-shadow: 0 0 25px -5px rgba(6, 182, 212, 0.35);
+    }
+    
+    .glow-emerald {
+      box-shadow: 0 0 25px -5px rgba(16, 185, 129, 0.35);
+    }
+    
+    .pulse-ring {
+      animation: pulse-ring 2s cubic-bezier(0.215, 0.61, 0.355, 1) infinite;
+    }
+    
+    @keyframes pulse-ring {
+      0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7); }
+      70% { transform: scale(1); box-shadow: 0 0 0 10px rgba(16, 185, 129, 0); }
+      100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
+    }
+
+    /* Custom scrollbars */
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #080c14;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #1e293b;
+      border-radius: 9999px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #334155;
+    }
+  </style>
+</head>
+<body class="min-h-screen text-slate-200 antialiased selection:bg-cyan-500 selection:text-white pb-20">
+
+  <!-- Top Executive Notification Bar -->
+  <div class="bg-gradient-to-r from-slate-900 via-cyan-950/60 to-slate-900 border-b border-cyan-500/20 px-4 py-2 text-xs">
+    <div class="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-3">
+      <div class="flex items-center space-x-2">
+        <span class="relative flex h-2 w-2">
+          <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+          <span class="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+        </span>
+        <span class="font-mono text-cyan-400 font-semibold tracking-wider">NODE-NBO-01 [ACTIVE]</span>
+        <span class="text-slate-400 hidden sm:inline">|</span>
+        <span class="text-slate-400 hidden sm:inline">Low-Latency Interconnect: JKI Airport Data Core &harr; London LHR Bridge</span>
+      </div>
+      <div class="flex items-center space-x-4 font-mono text-[11px] text-slate-400">
+        <span>mTLS 1.3: <strong class="text-emerald-400 font-medium">VERIFIED</strong></span>
+        <span>LATENCY: <strong class="text-emerald-400 font-medium">18ms</strong></span>
+        <span id="liveTimestamp" class="text-slate-300">2026-11-10 09:58:00 UTC</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Primary Header & Executive Identity -->
+  <header class="border-b border-slate-800/80 bg-slate-950/60 backdrop-blur-md sticky top-0 z-40">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 py-4 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+      <div class="flex items-center space-x-4">
+        <!-- Logo Icon -->
+        <div class="h-11 w-11 rounded-xl bg-gradient-to-br from-cyan-500 to-indigo-600 flex items-center justify-center shadow-lg shadow-cyan-500/20 border border-cyan-400/30">
+          <svg class="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" />
+          </svg>
+        </div>
+        <div>
+          <div class="flex items-center space-x-2">
+            <h1 class="text-xl font-bold tracking-tight text-white flex items-center gap-2">
+              THE FORGE <span class="text-xs px-2 py-0.5 rounded-md bg-cyan-500/10 text-cyan-400 border border-cyan-500/30 font-mono font-medium">ENTERPRISE CORE</span>
+            </h1>
+          </div>
+          <p class="text-xs text-slate-400 font-medium">Sovereign Rail Telemetry & Settlement Engine &bull; UK Ref: 119-936517</p>
+        </div>
+      </div>
+
+      <!-- Recipient Tailored Badge -->
+      <div class="flex items-center bg-slate-900/90 rounded-xl p-2.5 px-4 border border-cyan-500/30 glow-cyan">
+        <div class="mr-3 p-2 rounded-lg bg-red-950/60 border border-red-500/40 text-red-400 font-bold text-xs tracking-wider">
+          KQ
+        </div>
+        <div>
+          <div class="text-[11px] uppercase font-mono tracking-wider text-cyan-400">Exclusive Client Sandbox</div>
+          <div class="text-sm font-semibold text-slate-100 flex items-center gap-1.5">
+            Johnburgman Onyango 
+            <span class="text-xs font-normal text-slate-400">&bull; Kenya Airways (KQ)</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Container -->
+  <main class="max-w-7xl mx-auto px-4 sm:px-6 pt-8 space-y-8">
+
+    <!-- Hero / Welcome Banner -->
+    <section class="glass-card rounded-2xl p-6 sm:p-8 relative overflow-hidden">
+      <div class="absolute right-0 top-0 -mt-12 -mr-12 w-96 h-96 bg-cyan-500/10 rounded-full blur-3xl pointer-events-none"></div>
+      <div class="relative z-10 max-w-4xl space-y-4">
+        <div class="inline-flex items-center space-x-2 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 text-xs font-mono">
+          <span class="h-1.5 w-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
+          <span>48-Hour Dispute Compression & Zero-Sum Airline Settlement</span>
+        </div>
+        <h2 class="text-2xl sm:text-3xl font-bold text-white tracking-tight leading-tight">
+          Eliminate Passenger Booking Timeouts, Reconcile GDS/BSP Rails, and Automate Dispute Resolution.
+        </h2>
+        <p class="text-sm sm:text-base text-slate-300 leading-relaxed">
+          Mr. Onyango, this dedicated environment demonstrates how <strong>The Forge</strong> resolves transient dropped checkout sessions across <strong>M-Pesa (Daraja)</strong>, local card gateways, and global <strong>IATA BSP / Amadeus</strong> clearing corridors in under 180 seconds—reducing manual chargeback overhead to zero without modifying your core booking reservation systems.
+        </p>
+        <div class="flex flex-wrap items-center gap-3 pt-2">
+          <a href="#simulator" class="px-4 py-2.5 rounded-xl bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-semibold text-xs transition duration-200 flex items-center gap-2 shadow-lg shadow-cyan-500/25">
+            <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+            Launch Live Timeout Simulator
+          </a>
+          <a href="#schedule" class="px-4 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-white font-semibold text-xs border border-slate-700 transition duration-200 flex items-center gap-2">
+            <svg class="h-4 w-4 text-cyan-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+            Schedule 15-Min Walkthrough
+          </a>
+          <button onclick="toggleModal('specsModal')" class="px-4 py-2.5 rounded-xl bg-slate-900/80 hover:bg-slate-800 text-slate-300 font-mono text-xs border border-slate-700/80 transition duration-200">
+            View ISO 20022 Schema Specs &rarr;
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Key Metrics Grid -->
+    <section class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+      <div class="glass-card rounded-2xl p-5 border-l-4 border-l-cyan-500">
+        <div class="flex items-center justify-between text-slate-400 text-xs font-medium">
+          <span>Dispute Resolution Window</span>
+          <span class="text-cyan-400 font-mono font-semibold">-98.7%</span>
+        </div>
+        <div class="mt-2 text-2xl font-bold text-white tracking-tight">
+          &lt; 180s
+        </div>
+        <p class="mt-1 text-[11px] text-slate-400">
+          Down from standard 72+ hour manual bank inquiry backlogs.
+        </p>
+      </div>
+
+      <div class="glass-card rounded-2xl p-5 border-l-4 border-l-emerald-500">
+        <div class="flex items-center justify-between text-slate-400 text-xs font-medium">
+          <span>Settlement Invariant Drift</span>
+          <span class="text-emerald-400 font-mono font-semibold">0.00%</span>
+        </div>
+        <div class="mt-2 text-2xl font-bold text-emerald-400 tracking-tight">
+          Zero-Sum
+        </div>
+        <p class="mt-1 text-[11px] text-slate-400">
+          Continuous cryptographic audit guarantees multi-currency balance parity.
+        </p>
+      </div>
+
+      <div class="glass-card rounded-2xl p-5 border-l-4 border-l-indigo-500">
+        <div class="flex items-center justify-between text-slate-400 text-xs font-medium">
+          <span>Autonomous TSQ Sweeping</span>
+          <span class="text-indigo-400 font-mono font-semibold">Real-Time</span>
+        </div>
+        <div class="mt-2 text-2xl font-bold text-white tracking-tight">
+          96.4%
+        </div>
+        <p class="mt-1 text-[11px] text-slate-400">
+          Of dropped M-Pesa & card payments auto-resolved without agent tickets.
+        </p>
+      </div>
+
+      <div class="glass-card rounded-2xl p-5 border-l-4 border-l-amber-500">
+        <div class="flex items-center justify-between text-slate-400 text-xs font-medium">
+          <span>Chargeback Arbitration Defense</span>
+          <span class="text-amber-400 font-mono font-semibold">SHA-256</span>
+        </div>
+        <div class="mt-2 text-2xl font-bold text-white tracking-tight">
+          98.2%
+        </div>
+        <p class="mt-1 text-[11px] text-slate-400">
+          Win rate using immutable switch evidence packets.
+        </p>
+      </div>
+    </section>
+
+    <!-- Interactive Section: Autonomous TSQ Telemetry Simulator -->
+    <section id="simulator" class="glass-card rounded-2xl p-6 sm:p-8 space-y-6">
+      <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-slate-800 pb-5">
+        <div>
+          <div class="flex items-center space-x-2">
+            <span class="px-2 py-0.5 rounded text-[10px] font-mono font-bold bg-cyan-500/20 text-cyan-300 uppercase">Interactive Engine</span>
+            <h3 class="text-lg font-bold text-white">Autonomous TSQ & Dropped Session Reversal Simulator</h3>
+          </div>
+          <p class="text-xs text-slate-400 mt-1">
+            Simulate a passenger booking Kenya Airways ticket (NBO &rarr; LHR) experiencing an ambiguous network drop during checkout.
+          </p>
+        </div>
+        <div>
+          <button id="simBtn" onclick="runSimulation()" class="px-5 py-3 rounded-xl bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-slate-950 font-bold text-xs tracking-wide uppercase transition duration-200 shadow-lg shadow-cyan-500/20 flex items-center gap-2">
+            <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+            Trigger HTTP 504 Gateway Dropout
+          </button>
+        </div>
+      </div>
+
+      <!-- Simulation Pipeline Stages -->
+      <div class="grid grid-cols-1 md:grid-cols-4 gap-4" id="simStages">
+        <!-- Stage 1 -->
+        <div id="stage1" class="rounded-xl border border-slate-800 bg-slate-900/60 p-4 transition-all duration-300">
+          <div class="flex items-center justify-between text-xs text-slate-400 mb-2">
+            <span class="font-mono font-bold">STAGE 01</span>
+            <span id="badge1" class="h-2 w-2 rounded-full bg-slate-700"></span>
+          </div>
+          <h4 class="text-sm font-semibold text-slate-200">Timeout Detected</h4>
+          <p class="text-[11px] text-slate-400 mt-1" id="desc1">Standing by for booking session...</p>
+          <div class="mt-3 font-mono text-[10px] text-slate-500 bg-slate-950 p-2 rounded border border-slate-800 truncate" id="log1">
+            STATUS: IDLE
+          </div>
+        </div>
+
+        <!-- Stage 2 -->
+        <div id="stage2" class="rounded-xl border border-slate-800 bg-slate-900/60 p-4 transition-all duration-300">
+          <div class="flex items-center justify-between text-xs text-slate-400 mb-2">
+            <span class="font-mono font-bold">STAGE 02</span>
+            <span id="badge2" class="h-2 w-2 rounded-full bg-slate-700"></span>
+          </div>
+          <h4 class="text-sm font-semibold text-slate-200">Sub-15s TSQ Interrogation</h4>
+          <p class="text-[11px] text-slate-400 mt-1" id="desc2">Telemetry sweep of switch endpoints.</p>
+          <div class="mt-3 font-mono text-[10px] text-slate-500 bg-slate-950 p-2 rounded border border-slate-800 truncate" id="log2">
+            SWITCH: LISTENING
+          </div>
+        </div>
+
+        <!-- Stage 3 -->
+        <div id="stage3" class="rounded-xl border border-slate-800 bg-slate-900/60 p-4 transition-all duration-300">
+          <div class="flex items-center justify-between text-xs text-slate-400 mb-2">
+            <span class="font-mono font-bold">STAGE 03</span>
+            <span id="badge3" class="h-2 w-2 rounded-full bg-slate-700"></span>
+          </div>
+          <h4 class="text-sm font-semibold text-slate-200">&lt;180s Autonomous Reversal</h4>
+          <p class="text-[11px] text-slate-400 mt-1" id="desc3">Zero manual touchpoint required.</p>
+          <div class="mt-3 font-mono text-[10px] text-slate-500 bg-slate-950 p-2 rounded border border-slate-800 truncate" id="log3">
+            ACTION: STANDBY
+          </div>
+        </div>
+
+        <!-- Stage 4 -->
+        <div id="stage4" class="rounded-xl border border-slate-800 bg-slate-900/60 p-4 transition-all duration-300">
+          <div class="flex items-center justify-between text-xs text-slate-400 mb-2">
+            <span class="font-mono font-bold">STAGE 04</span>
+            <span id="badge4" class="h-2 w-2 rounded-full bg-slate-700"></span>
+          </div>
+          <h4 class="text-sm font-semibold text-slate-200">SHA-256 Evidence Packet</h4>
+          <p class="text-[11px] text-slate-400 mt-1" id="desc4">Cryptographic proof for dispute defense.</p>
+          <div class="mt-3 font-mono text-[10px] text-slate-500 bg-slate-950 p-2 rounded border border-slate-800 truncate" id="log4">
+            HASH: PENDING
+          </div>
+        </div>
+      </div>
+
+      <!-- Telemetry Output Inspector -->
+      <div class="rounded-xl bg-slate-950 border border-slate-800 p-4 font-mono text-xs text-slate-300 space-y-3">
+        <div class="flex items-center justify-between border-b border-slate-800/80 pb-2">
+          <div class="flex items-center space-x-2">
+            <span class="h-2 w-2 rounded-full bg-cyan-400"></span>
+            <span class="text-slate-400 uppercase tracking-wider text-[11px]">Real-Time Telemetry Terminal & Audit Stream</span>
+          </div>
+          <button onclick="copyHash()" id="copyBtn" class="text-[11px] px-2.5 py-1 rounded bg-slate-800 hover:bg-slate-700 text-cyan-400 border border-slate-700 transition">
+            Copy SHA-256 Digest
+          </button>
+        </div>
+        <div id="terminalStream" class="h-32 overflow-y-auto space-y-1 text-slate-400 text-[11px] leading-relaxed">
+          <div><span class="text-slate-600">[00:00:00]</span> Initialized connection to Kenya Airways Payment Telemetry Ingress...</div>
+          <div><span class="text-slate-600">[00:00:01]</span> Channels mapped: M-Pesa C2B (Daraja 2.0), Direct Card (Interswitch/Mastercard), IATA BSP Clearing.</div>
+          <div><span class="text-slate-600">[00:00:02]</span> Ready for simulation event. Click "Trigger HTTP 504 Gateway Dropout" above.</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Double-Entry Multi-Currency Settlement Stream -->
+    <section class="glass-card rounded-2xl p-6 sm:p-8 space-y-6">
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div>
+          <h3 class="text-lg font-bold text-white flex items-center gap-2">
+            Double-Entry Ledger & Multi-Currency Settlement
+            <span class="text-xs px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 font-mono">Zero-Drift Verified</span>
+          </h3>
+          <p class="text-xs text-slate-400 mt-1">Live transaction telemetry across passenger ticket allocations, agency fees, and clearing payouts.</p>
+        </div>
+        <!-- Filter Tabs -->
+        <div class="flex flex-wrap items-center gap-2 font-mono text-xs">
+          <button onclick="filterLedger('all')" class="tab-btn active px-3 py-1.5 rounded-lg bg-cyan-500/20 text-cyan-300 border border-cyan-500/40">All Rails</button>
+          <button onclick="filterLedger('mpesa')" class="tab-btn px-3 py-1.5 rounded-lg bg-slate-900 text-slate-400 border border-slate-800 hover:bg-slate-800">M-Pesa</button>
+          <button onclick="filterLedger('card')" class="tab-btn px-3 py-1.5 rounded-lg bg-slate-900 text-slate-400 border border-slate-800 hover:bg-slate-800">Direct Cards</button>
+          <button onclick="filterLedger('bsp')" class="tab-btn px-3 py-1.5 rounded-lg bg-slate-900 text-slate-400 border border-slate-800 hover:bg-slate-800">IATA BSP / GDS</button>
+        </div>
+      </div>
+
+      <!-- Table -->
+      <div class="overflow-x-auto rounded-xl border border-slate-800 bg-slate-950/60">
+        <table class="w-full text-left text-xs font-mono">
+          <thead class="bg-slate-900/80 text-slate-400 border-b border-slate-800">
+            <tr>
+              <th class="p-3.5">PNR / Ref</th>
+              <th class="p-3.5">Corridor / Rail</th>
+              <th class="p-3.5">Gross Amount</th>
+              <th class="p-3.5">Net Settlement</th>
+              <th class="p-3.5">Verification Digest</th>
+              <th class="p-3.5">Status</th>
+            </tr>
+          </thead>
+          <tbody id="ledgerBody" class="divide-y divide-slate-800/60 text-slate-300">
+            <!-- Row 1 -->
+            <tr class="hover:bg-slate-900/40" data-corridor="mpesa">
+              <td class="p-3.5 font-bold text-white">KQ-7842-NBO</td>
+              <td class="p-3.5"><span class="px-2 py-0.5 rounded bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">M-Pesa C2B (KES)</span></td>
+              <td class="p-3.5 text-slate-200">KES 84,200.00</td>
+              <td class="p-3.5 text-emerald-400 font-semibold">KES 83,779.00</td>
+              <td class="p-3.5 text-[10px] text-slate-400 truncate max-w-[120px]">e3b0c44298fc1c14...</td>
+              <td class="p-3.5"><span class="text-emerald-400 flex items-center gap-1">&bull; Reconciled</span></td>
+            </tr>
+            <!-- Row 2 -->
+            <tr class="hover:bg-slate-900/40" data-corridor="bsp">
+              <td class="p-3.5 font-bold text-white">KQ-9102-LHR</td>
+              <td class="p-3.5"><span class="px-2 py-0.5 rounded bg-indigo-500/10 text-indigo-400 border border-indigo-500/20">IATA BSP (GBP)</span></td>
+              <td class="p-3.5 text-slate-200">&pound; 1,420.50</td>
+              <td class="p-3.5 text-indigo-400 font-semibold">&pound; 1,406.30</td>
+              <td class="p-3.5 text-[10px] text-slate-400 truncate max-w-[120px]">7d1b32f4a8990c01...</td>
+              <td class="p-3.5"><span class="text-emerald-400 flex items-center gap-1">&bull; Settled</span></td>
+            </tr>
+            <!-- Row 3 -->
+            <tr class="hover:bg-slate-900/40" data-corridor="card">
+              <td class="p-3.5 font-bold text-white">KQ-3301-JNB</td>
+              <td class="p-3.5"><span class="px-2 py-0.5 rounded bg-cyan-500/10 text-cyan-400 border border-cyan-500/20">Direct Card (USD)</span></td>
+              <td class="p-3.5 text-slate-200">$ 680.00</td>
+              <td class="p-3.5 text-cyan-400 font-semibold">$ 669.80</td>
+              <td class="p-3.5 text-[10px] text-slate-400 truncate max-w-[120px]">2c26b46b68ffc68e...</td>
+              <td class="p-3.5"><span class="text-emerald-400 flex items-center gap-1">&bull; Reconciled</span></td>
+            </tr>
+            <!-- Row 4 -->
+            <tr class="hover:bg-slate-900/40" data-corridor="mpesa">
+              <td class="p-3.5 font-bold text-white">KQ-4091-MBA</td>
+              <td class="p-3.5"><span class="px-2 py-0.5 rounded bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">M-Pesa B2C (KES)</span></td>
+              <td class="p-3.5 text-slate-200">KES 14,500.00</td>
+              <td class="p-3.5 text-emerald-400 font-semibold">KES 14,450.00</td>
+              <td class="p-3.5 text-[10px] text-slate-400 truncate max-w-[120px]">f6c04f9794e779d6...</td>
+              <td class="p-3.5"><span class="text-emerald-400 flex items-center gap-1">&bull; Auto-Reversed</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="flex items-center justify-between text-xs text-slate-500 font-mono">
+        <span>Showing 4 active corridors &bull; Refresh frequency: Real-time telemetry feed</span>
+        <span class="text-slate-400">Total Invariant Balance Verification: <strong>0.00 DEV</strong></span>
+      </div>
+    </section>
+
+    <!-- Technical Architecture & ISO 20022 Alignment Section -->
+    <section class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <!-- Left 2 Cols: Architectural Highlights -->
+      <div class="lg:col-span-2 glass-card rounded-2xl p-6 sm:p-8 space-y-4">
+        <h3 class="text-lg font-bold text-white flex items-center gap-2">
+          Architectural Footprint: Out-of-Band Airline Payment Telemetry
+        </h3>
+        <p class="text-xs text-slate-300 leading-relaxed">
+          The Forge connects non-intrusively via read-only socket sniffing and REST webhook gateways. By monitoring packet lifecycles between passenger frontends, acquiring switches, and IATA BSP pipelines, it establishes ground truth transaction state independently of core reservation engines.
+        </p>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2">
+          <div class="rounded-xl border border-slate-800 bg-slate-900/40 p-4">
+            <div class="text-cyan-400 font-semibold text-xs font-mono uppercase tracking-wider">ISO 20022 Direct Transformation</div>
+            <p class="text-[11px] text-slate-400 mt-1">Direct pacs.008 customer credit and pacs.002 payment status reporting mapped natively for cross-border banking clearing.</p>
+          </div>
+          <div class="rounded-xl border border-slate-800 bg-slate-900/40 p-4">
+            <div class="text-emerald-400 font-semibold text-xs font-mono uppercase tracking-wider">Mutual TLS (mTLS 1.3)</div>
+            <p class="text-[11px] text-slate-400 mt-1">Bank-grade zero-trust perimeter routing with elliptic-curve certificate validation for all airline transaction telemetry.</p>
+          </div>
+          <div class="rounded-xl border border-slate-800 bg-slate-900/40 p-4">
+            <div class="text-indigo-400 font-semibold text-xs font-mono uppercase tracking-wider">M-Pesa Daraja 2.0 Hook</div>
+            <p class="text-[11px] text-slate-400 mt-1">Autonomous reconciliation of STK Push timeouts and unacknowledged callback payloads within 15 seconds.</p>
+          </div>
+          <div class="rounded-xl border border-slate-800 bg-slate-900/40 p-4">
+            <div class="text-amber-400 font-semibold text-xs font-mono uppercase tracking-wider">Immutable Evidence Synthesis</div>
+            <p class="text-[11px] text-slate-400 mt-1">Generates SHA-256 cryptographic digests defending chargebacks with card schemes and acquiring banks.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right 1 Col: Quick Integration Actions -->
+      <div class="glass-card rounded-2xl p-6 sm:p-8 space-y-4 flex flex-col justify-between">
+        <div>
+          <h4 class="text-sm font-bold text-white uppercase tracking-wider font-mono text-cyan-400">Technical Briefing Pack</h4>
+          <p class="text-xs text-slate-400 mt-1">Access implementation documentation and integration schema files.</p>
+          <div class="space-y-2 mt-4 font-mono text-xs">
+            <button onclick="toggleModal('specsModal')" class="w-full text-left p-3 rounded-xl bg-slate-900/90 hover:bg-slate-800 border border-slate-800 text-slate-200 flex items-center justify-between transition">
+              <span>ISO 20022 pacs.008 Adapter</span>
+              <span class="text-cyan-400">&rarr;</span>
+            </button>
+            <button onclick="toggleModal('webhookModal')" class="w-full text-left p-3 rounded-xl bg-slate-900/90 hover:bg-slate-800 border border-slate-800 text-slate-200 flex items-center justify-between transition">
+              <span>Webhook Telemetry Schema</span>
+              <span class="text-cyan-400">&rarr;</span>
+            </button>
+            <div class="p-3 rounded-xl bg-slate-950 border border-slate-800/80 text-[11px] text-slate-400">
+              <span class="text-emerald-400 font-bold">&check; Zero Architectural Overhaul:</span> Operates without altering Amadeus, Navitaire, or existing core reservation pipelines.
+            </div>
+          </div>
+        </div>
+        <div class="pt-4 border-t border-slate-800">
+          <div class="text-[11px] text-slate-500">Corporate Registration:</div>
+          <div class="text-xs font-mono text-slate-300">Forge Systems Technologies Ltd (UK #119-936517)</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Schedule Introductory Technical Walkthrough -->
+    <section id="schedule" class="glass-card rounded-2xl p-6 sm:p-8 border border-cyan-500/30 glow-cyan space-y-6">
+      <div class="max-w-3xl">
+        <span class="px-2.5 py-0.5 rounded-full bg-cyan-500/20 text-cyan-300 border border-cyan-500/40 text-[10px] font-mono uppercase font-bold">Executive Direct Handshake</span>
+        <h3 class="text-xl sm:text-2xl font-bold text-white mt-2">Schedule a 15-Minute Introductory Technical Walkthrough</h3>
+        <p class="text-xs sm:text-sm text-slate-300 mt-1">
+          Directly confirm a briefing session with <strong>Oscar Kwifo</strong> (Director, Forge Systems Technologies Ltd) to review how The Forge directly cuts dispute handling costs and eliminates settlement drift for Kenya Airways.
+        </p>
+      </div>
+
+      <form id="scheduleForm" onsubmit="handleSchedule(event)" class="grid grid-cols-1 md:grid-cols-3 gap-4 pt-2">
+        <div>
+          <label class="block text-xs font-mono text-slate-400 mb-1">Target Contact</label>
+          <input type="text" readonly value="Johnburgman Onyango" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3.5 py-2.5 text-xs text-slate-200 font-medium focus:outline-none">
+        </div>
+        <div>
+          <label class="block text-xs font-mono text-slate-400 mb-1">Organization</label>
+          <input type="text" readonly value="Kenya Airways PLC (KQ)" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3.5 py-2.5 text-xs text-slate-200 font-medium focus:outline-none">
+        </div>
+        <div>
+          <label class="block text-xs font-mono text-slate-400 mb-1">Preferred Timeframe</label>
+          <select id="timeSlot" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3.5 py-2.5 text-xs text-slate-200 font-medium focus:outline-none focus:border-cyan-500">
+            <option value="Thursday 10:00 AM EAT">Thursday 10:00 AM EAT</option>
+            <option value="Thursday 2:30 PM EAT">Thursday 2:30 PM EAT</option>
+            <option value="Friday 11:00 AM EAT">Friday 11:00 AM EAT</option>
+            <option value="Friday 4:00 PM EAT">Friday 4:00 PM EAT</option>
+            <option value="Open to any day">Open to any day that works best</option>
+          </select>
+        </div>
+        <div class="md:col-span-3">
+          <label class="block text-xs font-mono text-slate-400 mb-1">Key Focus Area / Operational Note (Optional)</label>
+          <input type="text" id="scheduleNotes" placeholder="e.g. M-Pesa timeout reduction, IATA BSP reconciliation, or chargeback proof digest..." class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3.5 py-2.5 text-xs text-slate-200 placeholder-slate-600 focus:outline-none focus:border-cyan-500">
+        </div>
+        <div class="md:col-span-3 flex items-center justify-between pt-2">
+          <span class="text-[11px] text-slate-400">Response coordinates directly to: <code class="text-cyan-400">Sales@firewallsflashpoints.com</code></span>
+          <button type="submit" class="px-6 py-2.5 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-400 hover:to-teal-500 text-slate-950 font-bold text-xs uppercase tracking-wider transition duration-200 shadow-lg shadow-emerald-500/20">
+            Confirm Technical Briefing &rarr;
+          </button>
+        </div>
+      </form>
+      <!-- Confirmation Notice -->
+      <div id="scheduleSuccess" class="hidden p-4 rounded-xl bg-emerald-500/10 border border-emerald-500/30 text-emerald-300 text-xs font-mono flex items-center gap-2">
+        <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+        <span>Walkthrough request logged. Oscar Kwifo and the Forge engineering team have received your preferred slot and will synchronize calendar coordinates.</span>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Modal: ISO 20022 Adapter Schema -->
+  <div id="specsModal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+    <div class="glass-card rounded-2xl max-w-2xl w-full p-6 space-y-4 border border-cyan-500/30">
+      <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+        <h4 class="text-sm font-bold text-white font-mono flex items-center gap-2">
+          <span class="h-2 w-2 rounded-full bg-cyan-400"></span>
+          ISO 20022 clearing Adapter Specification (pacs.008 & pacs.002)
+        </h4>
+        <button onclick="toggleModal('specsModal')" class="text-slate-400 hover:text-white">&times;</button>
+      </div>
+      <p class="text-xs text-slate-300">
+        Native financial messaging adapter schema ensuring all airline passenger settlement events map directly to regional interbank rails and international clearing standards.
+      </p>
+      <div class="bg-slate-950 rounded-xl p-4 border border-slate-800 font-mono text-[11px] text-cyan-300 overflow-x-auto max-h-64">
+<pre>{
+  "MessageDefinitionIdentifier": "pacs.008.001.10",
+  "GrpHdr": {
+    "MsgId": "FORGE/KQ-NBO/20261110/7842",
+    "CreDtTm": "2026-11-10T09:58:12.000Z",
+    "NbOfTxs": "1",
+    "SttlmInf": { "SttlmMtd": "CLRG", "ClrSys": { "Prtry": "KENYA-REALTIME-SETTLE" } }
+  },
+  "CdtTrfTxInf": {
+    "PmtId": { "EndToEndId": "KQ-PNR-7842-SETTLE", "TxId": "TXN-890214-MPESA" },
+    "IntrBkSttlmAmt": { "@Ccy": "KES", "#text": "84200.00" },
+    "Dbtr": { "Nm": "PASSENGER CHECKOUT NBO" },
+    "Cdtr": { "Nm": "KENYA AIRWAYS PLC REVENUE ACC" }
+  }
+}</pre>
+      </div>
+      <div class="flex justify-end">
+        <button onclick="toggleModal('specsModal')" class="px-4 py-2 rounded-lg bg-slate-800 text-xs text-slate-300 hover:bg-slate-700">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal: Webhook Telemetry Schema -->
+  <div id="webhookModal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+    <div class="glass-card rounded-2xl max-w-2xl w-full p-6 space-y-4 border border-emerald-500/30">
+      <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+        <h4 class="text-sm font-bold text-white font-mono flex items-center gap-2">
+          <span class="h-2 w-2 rounded-full bg-emerald-400"></span>
+          Out-of-Band Autonomous Webhook Payload
+        </h4>
+        <button onclick="toggleModal('webhookModal')" class="text-slate-400 hover:text-white">&times;</button>
+      </div>
+      <p class="text-xs text-slate-300">
+        Dispatched automatically to Kenya Airways' payment reconciliation service when a dropped checkout session is confirmed reversed.
+      </p>
+      <div class="bg-slate-950 rounded-xl p-4 border border-slate-800 font-mono text-[11px] text-emerald-300 overflow-x-auto max-h-64">
+<pre>{
+  "event": "session.autonomous_resolution",
+  "pnr": "KQ-4091-MBA",
+  "carrier": "Kenya Airways",
+  "channel": "Daraja_MPesa_C2B",
+  "timeout_code": "HTTP_504_GATEWAY_TIMEOUT",
+  "resolution": "AUTO_REVERSED_TO_WALLET",
+  "tsq_duration_ms": 14200,
+  "elapsed_total_seconds": 128,
+  "sha256_audit_packet": "f6c04f9794e779d6b5e1b4d08b39c05d76201a070192e21b8c082725e24b4392",
+  "zero_drift_ledger_verified": true
+}</pre>
+      </div>
+      <div class="flex justify-end">
+        <button onclick="toggleModal('webhookModal')" class="px-4 py-2 rounded-lg bg-slate-800 text-xs text-slate-300 hover:bg-slate-700">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- JavaScript Interaction Logic -->
+  <script>
+    // Live Clock Updater
+    function updateClock() {
+      const now = new Date();
+      const utcString = now.toISOString().replace('T', ' ').substring(0, 19) + ' UTC';
+      const el = document.getElementById('liveTimestamp');
+      if (el) el.textContent = utcString;
+    }
+    setInterval(updateClock, 1000);
+    updateClock();
+
+    // Modal Controller
+    function toggleModal(id) {
+      const modal = document.getElementById(id);
+      if (modal) {
+        modal.classList.toggle('hidden');
+      }
+    }
+
+    // Ledger Filter Tabs
+    function filterLedger(corridor) {
+      const buttons = document.querySelectorAll('.tab-btn');
+      buttons.forEach(btn => {
+        btn.classList.remove('bg-cyan-500/20', 'text-cyan-300', 'border-cyan-500/40');
+        btn.classList.add('bg-slate-900', 'text-slate-400', 'border-slate-800');
+      });
+      event.target.classList.remove('bg-slate-900', 'text-slate-400', 'border-slate-800');
+      event.target.classList.add('bg-cyan-500/20', 'text-cyan-300', 'border-cyan-500/40');
+
+      const rows = document.querySelectorAll('#ledgerBody tr');
+      rows.forEach(row => {
+        if (corridor === 'all' || row.dataset.corridor === corridor) {
+          row.style.display = '';
+        } else {
+          row.style.display = 'none';
+        }
+      });
+    }
+
+    // TSQ Interactive Simulation Controller
+    let simRunning = false;
+    let currentHash = 'f6c04f9794e779d6b5e1b4d08b39c05d76201a070192e21b8c082725e24b4392';
+
+    function addLog(msg, colorClass = 'text-slate-400') {
+      const stream = document.getElementById('terminalStream');
+      const time = new Date().toTimeString().split(' ')[0];
+      const div = document.createElement('div');
+      div.className = colorClass;
+      div.innerHTML = `<span class="text-slate-600">[${time}]</span> ${msg}`;
+      stream.appendChild(div);
+      stream.scrollTop = stream.scrollHeight;
+    }
+
+    function runSimulation() {
+      if (simRunning) return;
+      simRunning = true;
+      const simBtn = document.getElementById('simBtn');
+      simBtn.disabled = true;
+      simBtn.classList.add('opacity-50', 'cursor-not-allowed');
+
+      // Reset UI indicators
+      for (let i = 1; i <= 4; i++) {
+        document.getElementById(`stage${i}`).className = "rounded-xl border border-slate-800 bg-slate-900/60 p-4 transition-all duration-300";
+        document.getElementById(`badge${i}`).className = "h-2 w-2 rounded-full bg-slate-700";
+      }
+
+      addLog("--> SIMULATION TRIGGERED: Passenger flight checkout (PNR: KQ-5521-NBO &rarr; AMS, KES 118,500.00).", "text-cyan-300 font-semibold");
+
+      // Stage 1: Timeout Occurred
+      setTimeout(() => {
+        const s1 = document.getElementById('stage1');
+        s1.className = "rounded-xl border border-amber-500/60 bg-amber-950/20 p-4 transition-all duration-300";
+        document.getElementById('badge1').className = "h-2 w-2 rounded-full bg-amber-400 animate-pulse";
+        document.getElementById('desc1').textContent = "Socket drop during mobile money handshake";
+        document.getElementById('log1').innerHTML = "<span class='text-amber-400'>DROP: HTTP 504 TIMEOUT</span>";
+        addLog("[ERROR 504] Daraja M-Pesa gateway dropped callback. Session unacknowledged. Holding seat inventory.", "text-amber-400");
+      }, 800);
+
+      // Stage 2: Sub-15s TSQ Interrogation
+      setTimeout(() => {
+        const s2 = document.getElementById('stage2');
+        s2.className = "rounded-xl border border-cyan-500/60 bg-cyan-950/20 p-4 transition-all duration-300";
+        document.getElementById('badge2').className = "h-2 w-2 rounded-full bg-cyan-400 animate-pulse";
+        document.getElementById('desc2').textContent = "Autonomous switch query dispatched (12.4s)";
+        document.getElementById('log2').innerHTML = "<span class='text-cyan-300'>TSQ QUERY: SUCCESS (STATE: ORPHANED)</span>";
+        addLog("[TSQ DISPATCH] Polling Daraja endpoint. Query response received in 12.4s. Transaction marked uncredited.", "text-cyan-300");
+      }, 2500);
+
+      // Stage 3: <180s Autonomous Reversal
+      setTimeout(() => {
+        const s3 = document.getElementById('stage3');
+        s3.className = "rounded-xl border border-emerald-500/60 bg-emerald-950/20 p-4 transition-all duration-300";
+        document.getElementById('badge3').className = "h-2 w-2 rounded-full bg-emerald-400";
+        document.getElementById('desc3').textContent = "Automated reversal completed in 104s total";
+        document.getElementById('log3').innerHTML = "<span class='text-emerald-400'>REVERSED: ZERO DISPUTE</span>";
+        addLog("[AUTO-REVERSAL] Emitted REST webhook to KQ reservation engine. Trapped seat inventory released. Passenger wallet refunded in 104s.", "text-emerald-300");
+      }, 4200);
+
+      // Stage 4: Cryptographic SHA-256 Digest
+      setTimeout(() => {
+        const generatedHex = Array.from(crypto.getRandomValues(new Uint8Array(16)))
+          .map(b => b.toString(16).padStart(2, '0')).join('') + '2b8c082725e24b4392';
+        currentHash = generatedHex;
+
+        const s4 = document.getElementById('stage4');
+        s4.className = "rounded-xl border border-indigo-500/60 bg-indigo-950/20 p-4 transition-all duration-300";
+        document.getElementById('badge4').className = "h-2 w-2 rounded-full bg-indigo-400";
+        document.getElementById('desc4').textContent = "Tamper-proof audit evidence synthesized";
+        document.getElementById('log4').innerHTML = `<span class='text-indigo-300 truncate'>${currentHash.substring(0, 16)}...</span>`;
+        addLog(`[SHA-256 SYNTHESIS] Digest compiled: ${currentHash}. Packet locked in immutable ledger audit trail.`, "text-indigo-300 font-semibold");
+
+        simRunning = false;
+        simBtn.disabled = false;
+        simBtn.classList.remove('opacity-50', 'cursor-not-allowed');
+      }, 5600);
+    }
+
+    // Copy Digest to Clipboard via execCommand fallback
+    function copyHash() {
+      const tempInput = document.createElement('input');
+      tempInput.value = currentHash;
+      document.body.appendChild(tempInput);
+      tempInput.select();
+      document.execCommand('copy');
+      document.body.removeChild(tempInput);
+
+      const copyBtn = document.getElementById('copyBtn');
+      const originalText = copyBtn.textContent;
+      copyBtn.textContent = "Copied!";
+      copyBtn.classList.add('text-emerald-400');
+      setTimeout(() => {
+        copyBtn.textContent = originalText;
+        copyBtn.classList.remove('text-emerald-400');
+      }, 2000);
+    }
+
+    // Schedule Walkthrough Submission
+    function handleSchedule(e) {
+      e.preventDefault();
+      const slot = document.getElementById('timeSlot').value;
+      const notes = document.getElementById('scheduleNotes').value;
+      const successDiv = document.getElementById('scheduleSuccess');
+
+      successDiv.classList.remove('hidden');
+      addLog(`[WALKTHROUGH SCHEDULED] Slot: ${slot} | Focus: ${notes ? notes : 'General KQ Airline Settlement Overview'}`, 'text-emerald-400 font-semibold');
+      
+      const submitBtn = e.target.querySelector('button[type="submit"]');
+      submitBtn.disabled = true;
+      submitBtn.classList.add('opacity-50', 'cursor-not-allowed');
+      submitBtn.textContent = "Briefing Confirmed";
+    }
+  </script>
+</body>
+</html>
